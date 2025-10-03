@@ -127,6 +127,7 @@ void computer_move(int N,char board[N][N]){
 		col = rand()%N;
 	}while(board[row][col]!=' ');
 	board[row][col]='O';
+	printf("The computer has played the move row %d and coloumn %d\n",row,col);
 	print_board(N,board);
 }
 
@@ -166,7 +167,6 @@ int main(){
 		    if (mode==1){
 		    computer_move(N,board);
 		    }
-		    //print_board(N,board);
 		   turn++;
 
 	}
