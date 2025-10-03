@@ -120,15 +120,44 @@ int win_check(char current, int N, char board[N][N]) {
     return 0;
 }
 // Function to create random moves
-void computer_move(int N,char board[N][N]){
-	int row,col;
+void computer_move(int N,char board[N][N],int*row,int *col){
+	//int row,col;
 	do{
-		row = rand()%N;
-		col = rand()%N;
-	}while(board[row][col]!=' ');
-	board[row][col]='O';
-	printf("The computer has played the move row %d and coloumn %d\n",row,col);
+		*row = rand()%N;
+		*col = rand()%N;
+	}while(board[*row][*col]!=' ');
+	board[*row][*col]='O';
+	printf("The computer has played the move row %d and coloumn %d\n",*row,*col);
 	print_board(N,board);
+}
+
+void save_move(int i,int row,int col,char current){
+	FILE *F_ptr;
+	F_ptr=fopen("game_history.txt","a");
+	if(F_ptr==NULL){
+		printf("Error occured opening the file");
+	}
+	else {
+		fprintf(F_ptr,"%d. The player %c has played the move row %d and column %d for move number %d \n",i+1,current,row,col,i+1);
+		fclose(F_ptr);
+	}
+}
+void save_win(int i,char current,int T,int N){
+	FILE *ptr;
+	ptr=fopen("game_history.txt","a");
+	if(ptr==NULL){
+		printf("Error opening the file ");
+	}
+	else{
+		if(T==N*N){
+			fprintf(ptr,"The Game is a Draw");
+                fclose(ptr);
+		}
+		else{
+		fprintf(ptr,"The player %c has won the game in the move number %d",current,i);
+		fclose(ptr);
+		}
+	}
 }
 
 
@@ -150,26 +179,40 @@ int main(){
 	scanf("%d",&mode);
 	initialize_game_board(N,board);
 	print_board(N,board);
+	int turn=0;
+	char current_player;
+	//int i ;
 	for (int i=0;i<N*N; i++){
 	 int row,col;
-	 int turn;
-         int winchk;	 
+	 turn;
+         int winchk;
 	     char player[3]={'X','O','Z'};
-	     char current_player = player[turn % mode];
+	      current_player = player[turn % mode];
 	           input_validation(current_player,&row,&col,N,board);
 		   board[row][col] = current_player;
 		   print_board(N,board);
 		    if(win_check(current_player,N,board)==1){
 		   	printf("player %c has won the game!",current_player);
+			save_win(i,current_player,turn,N);
+
                           return 0;
 		    }
+		    save_move(i,row,col,current_player);
 		    srand(time(NULL));
 		    if (mode==1){
-		    computer_move(N,board);
+			    int temp_row,temp_col;
+		    computer_move(N,board,&temp_row,&temp_col);
+		    save_move(i+1,temp_row,temp_col,'O');
+		    i++;
 		    }
 		   turn++;
 
 	}
 	printf("The game is a DRAW!\n");
+       FILE *F_ptr = fopen("game_history.txt", "a");
+         if (F_ptr != NULL) {
+                  fprintf(F_ptr, "The game ended in a DRAW!\n");
+                                fclose(F_ptr);
+              }
         return 0;
  }
