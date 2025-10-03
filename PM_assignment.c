@@ -130,7 +130,7 @@ void computer_move(int N,char board[N][N],int*row,int *col){
 	printf("The computer has played the move row %d and coloumn %d\n",*row,*col);
 	print_board(N,board);
 }
-
+//save the move to the log file
 void save_move(int i,int row,int col,char current){
 	FILE *F_ptr;
 	F_ptr=fopen("game_history.txt","a");
@@ -142,6 +142,7 @@ void save_move(int i,int row,int col,char current){
 		fclose(F_ptr);
 	}
 }
+// save the win status to the log file
 void save_win(int i,char current,int T,int N){
 	FILE *ptr;
 	ptr=fopen("game_history.txt","a");
@@ -209,7 +210,7 @@ int main(){
 
 	}
 	printf("The game is a DRAW!\n");
-       FILE *F_ptr = fopen("game_history.txt", "a");
+       FILE *F_ptr = fopen("game_history.txt", "a");// saves the draw in log file
          if (F_ptr != NULL) {
                   fprintf(F_ptr, "The game ended in a DRAW!\n");
                                 fclose(F_ptr);
